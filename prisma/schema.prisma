@@ -1,0 +1,131 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AuthRole {
+  STUDENT
+  TEACHER
+}
+
+model AuthUser {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  active    Boolean
+  twoFaKey  String
+  createdAt DateTime
+  updatedAt DateTime
+
+  role    AuthRole
+  student Student?
+  teacher Teacher?
+
+  @@map("authentication")
+}
+
+model Student {
+  id              Int           @id @default(autoincrement())
+  name            String
+  documentNumber  String
+  address         String
+  photoUrl        String?
+  email           String        @unique
+  modality        Modality[]
+  modalityLevel   ModalityLevel @relation(fields: [modalityLevelId], references: [id])
+  modalityLevelId Int
+  plan            Plan          @relation(fields: [planId], references: [id])
+  planId          Int
+  appointments    Appointment[]
+  authUser        AuthUser      @relation(fields: [authUserid], references: [id])
+  authUserid      Int           @unique
+
+  @@map("students")
+}
+
+model Teacher {
+  id         Int        @id @default(autoincrement())
+  name       String     @unique
+  modalities Modality[]
+  Class      Class[]
+
+  authUser   AuthUser @relation(fields: [authUserid], references: [id])
+  authUserid Int      @unique
+
+  @@map("teachers")
+}
+
+model Modality {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String
+  students    Student[]
+  teachers    Teacher[]
+  class       Class[]
+
+  @@map("modalities")
+}
+
+model ModalityLevel {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String
+  Student     Student[]
+
+  @@map("modality_levels")
+}
+
+model Plan {
+  id                      Int       @id @default(autoincrement())
+  name                    String    @unique
+  price                   Float
+  description             String
+  student                 Student[]
+  allowedModalitiesNumber Int
+
+  @@map("plans")
+}
+
+model ClubUnit {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  address     String
+  description String
+  Class       Class[]
+
+  @@map("club_units")
+}
+
+model Class {
+  id              Int           @id @default(autoincrement())
+  modality        Modality      @relation(fields: [modalityId], references: [id])
+  modalityId      Int
+  teacher         Teacher       @relation(fields: [teacherId], references: [id])
+  teacherId       Int
+  date            DateTime
+  maximumStudents Int
+  unity           ClubUnit      @relation(fields: [clubUnitId], references: [id])
+  clubUnitId      Int
+  studentsBooked  Int
+  Appointment     Appointment[]
+
+  @@map("classes")
+}
+
+model Appointment {
+  id        Int      @id @default(autoincrement())
+  student   Student  @relation(fields: [studentId], references: [id])
+  studentId Int
+  class     Class    @relation(fields: [classId], references: [id])
+  classId   Int
+  createAd  DateTime
+
+  @@map("appointments")
+}
