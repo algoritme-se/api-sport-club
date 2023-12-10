@@ -29,13 +29,12 @@ model User {
   email     String   @unique
   password  String
   role      UserRole @default(STUDENT)
-  admin_id  String?
   teacher   Teacher? @relation(fields: [teacherId], references: [id])
   student   Student? @relation(fields: [studentId], references: [id])
-  admin     Admin?   @relation(fields: [adminId], references: [id])
+  admin     Admin?   @relation(fields: [admin_id], references: [id])
   teacherId String?
   studentId String?
-  adminId   String?
+  admin_id  String?
 
   @@map("users")
 }
@@ -67,9 +66,10 @@ model Teacher {
 }
 
 model Admin {
-  id String @id @default(uuid())
+  id      String @id @default(uuid())
   user_id String
   User    User[]
+
   @@map("admin_profiles")
 }
 
