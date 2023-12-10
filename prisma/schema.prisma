@@ -43,11 +43,11 @@ model Student {
   id                String          @id @default(uuid())
   modality          Modality[]
   modality_level    modality_level? @relation(fields: [modality_level_id], references: [id])
-  modality_level_id String?
+  modality_level_id String?         @default("1894c606-29e4-4801-bd62-07eaf593a862")
   plan              Plan?           @relation(fields: [plan_id], references: [id])
-  plan_id           String?
+  plan_id           String?         @default("0e8629e6-4bb6-4296-a4ef-7a63ae354fec")
   appointments      Appointment[]
-  status            StudentStatus   @default(PENDING)
+  status            StudentStatus   @default(TRIAL)
   User              User[]
 
   @@map("students")
