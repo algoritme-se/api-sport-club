@@ -36,7 +36,14 @@ async function main() {
     },
   ]
 
-  const plans = [{
+  const plans = [
+  {
+    name: 'TRIAL',
+    price: 0.00,
+    description: 'Plano de aula experimental',
+    allowed_modalities_number: 1, 
+  },
+    {
     name: 'PRATA',
     price: 170.00,
     description: 'Plano prata',
