@@ -2,7 +2,7 @@
 
 ## RFS ( Requisitos Funcionais )
 
-- [ ] Deve ser possivel se cadastrar;
+- [x] Deve ser possivel se cadastrar;
 - [ ] Deve ser possivel se autenticar;
 - [ ] Deve ser posssivel obter o perfil de um usuário;
 - [ ] Deve ser possivel obter o número de check-ins realidos pelo usuario nas aulas.

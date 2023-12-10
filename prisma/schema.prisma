@@ -16,90 +16,57 @@ enum UserRole {
   ADMIN
 }
 
-enum StudentStatus {
+enum UserStatus {
   PENDING
   TRIAL
   PAID
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  photo_url String?
-  email     String   @unique
-  password  String
-  role      UserRole @default(STUDENT)
-  teacher   Teacher? @relation(fields: [teacherId], references: [id])
-  student   Student? @relation(fields: [studentId], references: [id])
-  admin     Admin?   @relation(fields: [admin_id], references: [id])
-  teacherId String?
-  studentId String?
-  admin_id  String?
+  id                String          @id @default(uuid())
+  name              String
+  photo_url         String?
+  email             String          @unique
+  password          String
+  role              UserRole        @default(STUDENT)
+  modality          Modality[]
+  modality_level_id String?
+  modality_level    modality_level? @relation(fields: [modality_level_id], references: [id])
+  Appointment       Appointment[]
+  user_status       UserStatus      @default(TRIAL)
+  plan              Plan?           @relation(fields: [plan_id], references: [id])
+  plan_id           String?
+  class             Class[]
 
   @@map("users")
 }
 
-model Student {
-  id                String          @id @default(uuid())
-  modality          Modality[]
-  modality_level    modality_level? @relation(fields: [modality_level_id], references: [id])
-  modality_level_id String?         @default("1894c606-29e4-4801-bd62-07eaf593a862")
-  plan              Plan?           @relation(fields: [plan_id], references: [id])
-  plan_id           String?         @default("0e8629e6-4bb6-4296-a4ef-7a63ae354fec")
-  appointments      Appointment[]
-  status            StudentStatus   @default(TRIAL)
-  User              User[]
-
-  @@map("students")
-}
-
-model Teacher {
-  id         String     @id @default(uuid())
-  name       String     @unique
-  photo_url  String?
-  modalities Modality[]
-  Class      Class[]
-  user_id    String     @unique
-  User       User[]
-
-  @@map("teachers")
-}
-
-model Admin {
-  id      String @id @default(uuid())
-  user_id String
-  User    User[]
-
-  @@map("admin_profiles")
-}
-
 model Modality {
-  id          String    @id @default(uuid())
-  name        String
+  id          String  @id @default(uuid())
+  name        String  @unique
   description String
-  students    Student[]
-  teachers    Teacher[]
+  user        User[]
   class       Class[]
 
   @@map("modalities")
 }
 
 model modality_level {
-  id          String    @id @default(uuid())
-  name        String    @unique
+  id          String @id @default(uuid())
+  name        String @unique
   description String
-  Student     Student[]
+  User        User[]
 
   @@map("modality_levels")
 }
 
 model Plan {
-  id                        String    @id @default(uuid())
-  name                      String    @unique
+  id                        String @id @default(uuid())
+  name                      String @unique
   price                     Float
   description               String
-  student                   Student[]
   allowed_modalities_number Int
+  users                     User[]
 
   @@map("plans")
 }
@@ -120,22 +87,20 @@ model Class {
   id               String        @id @default(uuid())
   modality         Modality      @relation(fields: [modality_id], references: [id])
   modality_id      String
-  teacher          Teacher       @relation(fields: [teacherId], references: [id])
-  teacherId        String
   date             DateTime
   maximum_students Int
   unity            ClubUnit      @relation(fields: [club_unit_id], references: [id])
   club_unit_id     String
   students_booked  Int
   Appointment      Appointment[]
+  User             User[]
 
   @@map("classes")
 }
 
 model Appointment {
   id        String   @id @default(uuid())
-  student   Student  @relation(fields: [studentId], references: [id])
-  studentId String
+  user      User[]
   class     Class    @relation(fields: [class_id], references: [id])
   class_id  String
   create_ad DateTime @default(now())

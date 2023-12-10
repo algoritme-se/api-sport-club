@@ -8,13 +8,7 @@ export async function appRoutes(app: FastifyInstance) {
 
   app.get('/users', async (request, reply) => {
 
-    const users = await prisma.user.findMany({
-      include: {
-        student: true,
-        teacher: true,
-        admin: true,
-      }
-    })
+    const users = await prisma.user.findMany()
 
     return reply.status(200).send(users)
 
