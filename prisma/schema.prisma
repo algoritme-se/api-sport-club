@@ -10,122 +10,100 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum AuthRole {
+enum UserRole {
   STUDENT
   TEACHER
+  ADMIN
 }
 
-model AuthUser {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  active    Boolean
-  twoFaKey  String
-  createdAt DateTime
-  updatedAt DateTime
-
-  role    AuthRole
-  student Student?
-  teacher Teacher?
-
-  @@map("authentication")
+enum UserStatus {
+  PENDING
+  TRIAL
+  PAID
 }
 
-model Student {
-  id              Int           @id @default(autoincrement())
-  name            String
-  documentNumber  String
-  address         String
-  photoUrl        String?
-  email           String        @unique
-  modality        Modality[]
-  modalityLevel   ModalityLevel @relation(fields: [modalityLevelId], references: [id])
-  modalityLevelId Int
-  plan            Plan          @relation(fields: [planId], references: [id])
-  planId          Int
-  appointments    Appointment[]
-  authUser        AuthUser      @relation(fields: [authUserid], references: [id])
-  authUserid      Int           @unique
+model User {
+  id                String          @id @default(uuid())
+  name              String
+  photo_url         String?
+  email             String          @unique
+  password          String
+  role              UserRole        @default(STUDENT)
+  modality          Modality[]
+  modality_level_id String?
+  modality_level    modality_level? @relation(fields: [modality_level_id], references: [id])
+  Appointment       Appointment[]
+  user_status       UserStatus      @default(TRIAL)
+  plan              Plan?           @relation(fields: [plan_id], references: [id])
+  plan_id           String?
+  class             Class[]
 
-  @@map("students")
-}
-
-model Teacher {
-  id         Int        @id @default(autoincrement())
-  name       String     @unique
-  modalities Modality[]
-  Class      Class[]
-
-  authUser   AuthUser @relation(fields: [authUserid], references: [id])
-  authUserid Int      @unique
-
-  @@map("teachers")
+  @@map("users")
 }
 
 model Modality {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
+  id          String  @id @default(uuid())
+  name        String  @unique
   description String
-  students    Student[]
-  teachers    Teacher[]
+  user        User[]
   class       Class[]
 
   @@map("modalities")
 }
 
-model ModalityLevel {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
+model modality_level {
+  id          String @id @default(uuid())
+  name        String @unique
   description String
-  Student     Student[]
+  User        User[]
 
   @@map("modality_levels")
 }
 
 model Plan {
-  id                      Int       @id @default(autoincrement())
-  name                    String    @unique
-  price                   Float
-  description             String
-  student                 Student[]
-  allowedModalitiesNumber Int
+  id                        String @id @default(uuid())
+  name                      String @unique
+  price                     Float
+  description               String
+  allowed_modalities_number Int
+  users                     User[]
 
   @@map("plans")
 }
 
 model ClubUnit {
-  id          Int     @id @default(autoincrement())
+  id          String  @id @default(uuid())
   name        String  @unique
   address     String
   description String
   Class       Class[]
+  latitude    Decimal
+  longitude   Decimal
 
   @@map("club_units")
 }
 
 model Class {
-  id              Int           @id @default(autoincrement())
-  modality        Modality      @relation(fields: [modalityId], references: [id])
-  modalityId      Int
-  teacher         Teacher       @relation(fields: [teacherId], references: [id])
-  teacherId       Int
-  date            DateTime
-  maximumStudents Int
-  unity           ClubUnit      @relation(fields: [clubUnitId], references: [id])
-  clubUnitId      Int
-  studentsBooked  Int
-  Appointment     Appointment[]
+  id               String        @id @default(uuid())
+  modality         Modality      @relation(fields: [modality_id], references: [id])
+  modality_id      String
+  date             DateTime
+  maximum_students Int
+  unity            ClubUnit      @relation(fields: [club_unit_id], references: [id])
+  club_unit_id     String
+  students_booked  Int
+  Appointment      Appointment[]
+  User             User[]
 
   @@map("classes")
 }
 
 model Appointment {
-  id        Int      @id @default(autoincrement())
-  student   Student  @relation(fields: [studentId], references: [id])
-  studentId Int
-  class     Class    @relation(fields: [classId], references: [id])
-  classId   Int
-  createAd  DateTime
+  id        String   @id @default(uuid())
+  user      User[]
+  class     Class    @relation(fields: [class_id], references: [id])
+  class_id  String
+  create_ad DateTime @default(now())
 
   @@map("appointments")
 }

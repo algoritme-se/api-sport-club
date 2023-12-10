@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  api-sport-club:
+    image:bitname/postgresql
+  ports:
+    -5432:5432
+  environment:
+   -POSTGRESQL_USENAME=docker
+   -POSTGRESQL_PASSWORD=docker
+   -POSTGRESQL_DATABASE=sport-club-app   
