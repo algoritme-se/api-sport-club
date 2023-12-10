@@ -10,42 +10,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum AuthRole {
+enum UserRole {
   STUDENT
   TEACHER
+  ADMIN
 }
 
-model AuthUser {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  password_hash String
-  active        Boolean
-  two_fa_key    String
-  created_at    DateTime
-  updated_at    DateTime
+enum StudentStatus {
+  PENDING
+  TRIAL
+  PAID
+}
 
-  role    AuthRole
-  student Student?
-  teacher Teacher?
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  photo_url String?
+  email     String   @unique
+  password  String
+  role      UserRole @default(STUDENT)
+  admin_id  String?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
+  student   Student? @relation(fields: [studentId], references: [id])
+  admin     Admin?   @relation(fields: [adminId], references: [id])
+  teacherId String?
+  studentId String?
+  adminId   String?
 
-  @@map("authentication")
+  @@map("users")
 }
 
 model Student {
-  id                String         @id @default(uuid())
-  name              String
-  document_number   String
-  address           String
-  photoUrl          String?
-  email             String         @unique
+  id                String          @id @default(uuid())
   modality          Modality[]
-  modality_level    modality_level @relation(fields: [modality_level_id], references: [id])
-  modality_level_id String
-  plan              Plan           @relation(fields: [plan_id], references: [id])
-  plan_id           String
+  modality_level    modality_level? @relation(fields: [modality_level_id], references: [id])
+  modality_level_id String?
+  plan              Plan?           @relation(fields: [plan_id], references: [id])
+  plan_id           String?
   appointments      Appointment[]
-  auth_user         AuthUser       @relation(fields: [auth_user_id], references: [id])
-  auth_user_id      String         @unique
+  status            StudentStatus   @default(PENDING)
+  User              User[]
 
   @@map("students")
 }
@@ -53,18 +57,25 @@ model Student {
 model Teacher {
   id         String     @id @default(uuid())
   name       String     @unique
+  photo_url  String?
   modalities Modality[]
   Class      Class[]
-
-  auth_user    AuthUser @relation(fields: [auth_user_id], references: [id])
-  auth_user_id String   @unique
+  user_id    String     @unique
+  User       User[]
 
   @@map("teachers")
 }
 
+model Admin {
+  id String @id @default(uuid())
+  user_id String
+  User    User[]
+  @@map("admin_profiles")
+}
+
 model Modality {
   id          String    @id @default(uuid())
-  name        String    @unique
+  name        String
   description String
   students    Student[]
   teachers    Teacher[]
@@ -127,7 +138,7 @@ model Appointment {
   studentId String
   class     Class    @relation(fields: [class_id], references: [id])
   class_id  String
-  create_ad DateTime
+  create_ad DateTime @default(now())
 
   @@map("appointments")
 }
