@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify"
 import { register } from "./controllers/register.controller"
-import { prisma } from "../lib/prisma"
+import { prisma } from "@/lib/prisma"
 
 export async function appRoutes(app: FastifyInstance) {
   
