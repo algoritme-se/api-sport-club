@@ -1,7 +1,7 @@
 import { hash } from "bcryptjs"
-import { prisma } from "../lib/prisma"
-import { PrismaUserRepository } from "../http/repositories/prisma-user-repository"
-import RegisterUseCaseProps from "../interfaces"
+import { prisma } from "@/lib/prisma"
+import { PrismaUserRepository } from "@/http/repositories/prisma-user-repository"
+import RegisterUseCaseProps from "@/interfaces"
 import { Prisma } from "@prisma/client"
 
 
