@@ -1,21 +1,66 @@
 # Sport Club App (api)
 
-## RFS ( Requisitos Funcionais )
+Welcome to the Sports Club App, a powerful solution for modernizing the management of sports clubs.
 
-- [x] Deve ser possivel se cadastrar;
-- [ ] Deve ser possivel se autenticar;
-- [ ] Deve ser posssivel obter o perfil de um usuário;
-- [ ] Deve ser possivel obter o número de check-ins realidos pelo usuario nas aulas.
-- [ ] Deve ser possível o usuário buscar unidades próximas;
-- [ ] Deve ser possivel o realizar agendamento de aulas;
-- [ ] Deve ser possivel realizar o checkin da Aula.
+## Key Features:
+
+- Scheduler for Classes
+Effortlessly plan and manage classes with a robust scheduling system. Set up recurring schedules, assign trainers, and notify participants for a streamlined training program.
+
+- Event Announcements
+Keep members engaged with instant event announcements. Broadcast upcoming tournaments, special training sessions, and social events to ensure everyone stays informed.
+
+- Payment Management
+Simplify financial transactions with an integrated payment management system. Easily track and manage student payments, ensuring a secure and seamless experience for administrators and members.
+
+- Member Registration and Management
+Facilitate easy member registration and centralize member profiles. Track attendance, monitor progress, and manage all club-related activities efficiently.
 
 
-## RNs ( Regras de negócio )
+## Running this project:
 
-- O usuário não deve realizar mais de 2 check-in por dia.
-- O usuário só pode ver aulas no range de tempo do seu plano ( vide detalhes dosplanos )
+### Using docker:
 
-## RNFs
-- [ ]  A senha do usuário precisar estar criptografada.
-- [ ]  O usuário deve ser identificado com o JSON web Token.
+ ```console
+  docker-compose up
+ ```
+
+### Using correct node js version:
+
+```console
+
+nvm use 18.16.0
+node ci
+npm run build
+npm run start
+
+```
+
+### Execute database migrates and seeds:
+ 
+```console
+npm run migrate
+npm run seed
+```
+
+## requirements analysis 
+
+### RFS ( Functional Requirements )
+
+- [x] It must be possible to register;
+- [ ] It must be possible to authenticate;
+- [ ] It must be possible to obtain a user's profile;
+- [ ] It must be possible to obtain the number of check-ins carried out by the user in classes.
+- [ ] It should be possible for the user to search for nearby units;
+- [ ] It should be possible to schedule classes;
+- [ ] It should be possible to check into a class.
+
+
+### RNs ( Business rules )
+
+- [ ] The user must not perform more than 2 check-ins per day.
+- [ ] The user can only view lessons within the time range of their plan ( see plan details )
+
+### RNFs
+- [ ] The user's password must be encrypted.
+- [ ] The user must be identified with a JSON web token.
