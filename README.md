@@ -58,9 +58,12 @@ npm run seed
 
 ### RNs ( Business rules )
 
+- [x] The user must not be able to register with a duplicate email address.
+- [x] All users receive TRIAL status when they register.
 - [ ] The user must not perform more than 2 check-ins per day.
 - [ ] The user can only view lessons within the time range of their plan ( see plan details )
+- [ ] Trail status users can only make one appointment.
 
 ### RNFs
-- [ ] The user's password must be encrypted.
+- [x] The user's password must be encrypted.
 - [ ] The user must be identified with a JSON web token.
