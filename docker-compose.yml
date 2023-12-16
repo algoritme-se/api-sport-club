@@ -2,10 +2,31 @@ version: '3'
 
 services:
   api-sport-club:
-    image:bitname/postgresql
-  ports:
-    -5432:5432
-  environment:
-   -POSTGRESQL_USENAME=docker
-   -POSTGRESQL_PASSWORD=docker
-   -POSTGRESQL_DATABASE=sport-club-app   
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 512M
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+     - DATABASE_URL=postgresql://docker:docker@db:5432/sport-club-app
+     - NODE_ENV=dev
+     - PORT=3000
+     - TZ=America/Sao_Paulo
+      
+  db:
+    image: bitnami/postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRESQL_USERNAME=docker
+      - POSTGRESQL_PASSWORD=docker
+      - POSTGRESQL_DATABASE=sport-club-app
+    
+    
