@@ -5,19 +5,20 @@ import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found';
 
 export async function getUserProfile(request: FastifyRequest, reply: FastifyReply) {
 
-  // Schema validation
-  const userProfileParamSchema = z.object({
-    userId: z.string().uuid(),
-  });
-  const { userId } = userProfileParamSchema.parse(request.params);
+  const userId = request.user.sub;
 
   try {
 
     // factory pattern using getUserProfileCase
-    const authenticateUseCase = makeGetUserProfileCase();
-    const user = await authenticateUseCase.execute({ userId });
+    const getUserProfile = makeGetUserProfileCase();
+    const { user } = await getUserProfile.execute({ userId });
 
-    return reply.status(200).send(user);
+    return reply.status(200).send({
+      user: {
+        ...user,
+        password: undefined,
+      },
+    });
 
   } catch (error) {
 
