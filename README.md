@@ -48,8 +48,8 @@ npm run seed
 ### RFS ( Functional Requirements )
 
 - [x] It must be possible to register;
-- [ ] It must be possible to authenticate;
-- [ ] It must be possible to obtain a user's profile;
+- [x] It must be possible to authenticate;
+- [x] It must be possible to obtain a user's profile;
 - [ ] It must be possible to obtain the number of check-ins carried out by the user in classes.
 - [ ] It should be possible for the user to search for nearby units;
 - [ ] It should be possible to schedule classes;
